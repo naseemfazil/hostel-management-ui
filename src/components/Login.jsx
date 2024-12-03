@@ -84,7 +84,7 @@ const Login = () => {
                         {/* <a className="font-semibold text-indigo-600 hover:text-indigo-500 z-50" onClick={() => history.push('/register')}>
                             Register
                         </a> */}
-                        <Link className="font-semibold text-indigo-600 hover:text-indigo-500 z-50" to="/register">Register</Link>
+                        <Link className="font-semibold text-indigo-600 hover:text-indigo-500 z-50" to="/register" onClick={() => history.push('/register')}>Register</Link>
                     </p>
                 </div>
             </div>

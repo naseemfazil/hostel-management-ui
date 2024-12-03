@@ -5,6 +5,7 @@ import Register from './components/Register';
 import TableWithPagination from './components/Table';
 import { useState } from 'react';
 import Modal from './components/Modal';
+import HotelViewandEdit from './components/HotelViewandEdit';
 
 function App() {
 
@@ -41,6 +42,7 @@ function App() {
             <Route exact path="/" component={Login} />
             <Route path="/login" component={Login} />
             <Route path="/register" component={Register} />
+            <Route path="/hotel-view-edit" component={HotelViewandEdit} />
           </Switch>
         </div>
       </Router>
@@ -49,3 +51,4 @@ function App() {
 }
 
 export default App;
+
