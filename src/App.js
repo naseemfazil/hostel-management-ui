@@ -6,6 +6,7 @@ import TableWithPagination from './components/Table';
 import { useState } from 'react';
 import Modal from './components/Modal';
 import HotelViewandEdit from './components/HotelViewandEdit';
+import Navbar from './components/NavBar';
 
 function App() {
 
@@ -25,6 +26,7 @@ function App() {
   ];
   return (
     <div className="App">
+      {/* <Navbar/> */}
       {/* <TableWithPagination columns={columns} data={data} rowsPerPage={2}/> */}
       {/* <button
         onClick={openModal}
@@ -37,14 +39,14 @@ function App() {
         <p className="text-gray-600">Working fine</p>
       </Modal> */}
       <Router>
-        <div>
+        {/* <div> */}
           <Switch>
-            <Route exact path="/" component={Login} />
+            {/* <Route exact path="/" component={Login} /> */}
             <Route path="/login" component={Login} />
             <Route path="/register" component={Register} />
             <Route path="/hotel-view-edit" component={HotelViewandEdit} />
           </Switch>
-        </div>
+        {/* </div> */}
       </Router>
     </div>
   );
