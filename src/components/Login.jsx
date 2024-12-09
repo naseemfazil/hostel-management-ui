@@ -2,11 +2,34 @@ import React, { useState } from 'react';
 import InputBox from './InputBox';
 import BgImg from '../assets/BgImg2.jpg';
 import { useHistory, Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Login = () => {
 
     const history = useHistory();
     const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+
+    const login = async () => {
+        let obj = {
+            email,
+            password
+        }
+        console.log("obj", obj);
+        try {
+            const result = await axios.post('http://localhost:3001/login', obj);
+            console.log(result.data);
+            if (result?.data?.userRole === 'admin') {
+                console.log("works");
+                history.push('/hotel-view-edit');
+
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+
+    }
 
     return (
         <div className="h-screen bg-cover bg-center"
@@ -28,7 +51,7 @@ const Login = () => {
                 </div>
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <form action="#" method="POST" className="space-y-6">
+                    <div className="space-y-6">
                         <div>
                             {/* text-gray-900 */}
                             <label htmlFor="email" className="block text-sm/6 font-medium text-white">
@@ -41,6 +64,8 @@ const Login = () => {
                                     type="email"
                                     required={true}
                                     autoComplete="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                 />
 
                             </div>
@@ -65,19 +90,22 @@ const Login = () => {
                                     type="password"
                                     required
                                     autoComplete="current-password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                 />
                             </div>
                         </div>
 
                         <div>
                             <button
+                                onClick={() => login()}
                                 type="submit"
                                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
                                 Sign in
                             </button>
                         </div>
-                    </form>
+                    </div>
 
                     <p className="mt-10 text-center text-sm/6 text-gray-500">
                         Not a member?{' '}

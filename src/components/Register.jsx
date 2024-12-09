@@ -17,7 +17,7 @@ const Register = () => {
     const saveUser = async () => {
         if (name && email && password && confirmPassword) {
             if (password === confirmPassword) {
-                const userObj = { name, email, password, gender, confirmPassword };
+                const userObj = { name, email, password, gender, confirmPassword, };
                 console.log("userObj", userObj);
                 try {
                     const result = await axios.post('http://localhost:3001/register', userObj);
