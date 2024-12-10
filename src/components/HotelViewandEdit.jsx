@@ -19,21 +19,20 @@ const HotelViewandEdit = () => {
     }, []);
 
     return (
-        <div>
+        <div className="w-[90%] mx-auto">
             <div class="grid grid-cols-2 gap-4 p-4 px-28">
-                <div class="flex justify-end ">
+                <div class="flex justify-end">
                     <img src="https://images.oyoroomscdn.com/uploads/hotel_image/229985/medium/ecwhqwgtlssa.jpg" alt="Example" class="w-1/2 h-45" />
                 </div>
                 <div class="flex flex-col justify-between">
-                    <div className='flex justify-between'>
+                    <div className="flex justify-between">
                         <div>
-                            <h4 className='text-lg font-semibold text-gray-800'>Hotel O elegent Residnecy</h4>
-                            <p className='text-sm font-light text-gray-600'>Perumbakkam Main Rd, Chennai</p>
+                            <h4 className="text-lg font-semibold text-gray-800">Hotel O elegant Residency</h4>
+                            <p className="text-sm font-light text-gray-600">Perumbakkam Main Rd, Chennai</p>
                             <p>Free Wifi</p>
                         </div>
-
-                        {/* Dropdown start */}
                         <div>
+                            {/* Dropdown start */}
                             <div className="relative inline-block text-left" ref={dropdownRef}>
                                 <button
                                     onClick={toggleDropdown}
@@ -54,9 +53,7 @@ const HotelViewandEdit = () => {
                                 </button>
 
                                 {isOpen && (
-                                    <div
-                                        className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg origin-top-right"
-                                    >
+                                    <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg origin-top-right">
                                         <div className="py-1">
                                             <a
                                                 href="#"
@@ -80,17 +77,17 @@ const HotelViewandEdit = () => {
                                     </div>
                                 )}
                             </div>
+                            {/* Dropdown End */}
                         </div>
-                        {/* Dropdown End */}
                     </div>
-                    <div className='flex justify-between'>
+                    <div className="flex justify-between">
                         <h4>$45</h4>
                         <button>Book Now</button>
                     </div>
                 </div>
             </div>
-
         </div>
+
     );
 }
 

@@ -40,12 +40,13 @@ function App() {
       </Modal> */}
       <Router>
         {/* <div> */}
-          <Switch>
-            {/* <Route exact path="/" component={Login} /> */}
-            <Route path="/login" component={Login} />
-            <Route path="/register" component={Register} />
-            <Route path="/hotel-view-edit" component={HotelViewandEdit} />
-          </Switch>
+        <Switch>
+          {/* <Route exact path="/" component={Login} /> */}
+          <Route path="/login" component={Login} />
+          <Route path="/register" component={Register} />
+          <Route path="/home" component={Navbar} />
+          <Route path="/hotel-view-edit" component={HotelViewandEdit} />
+        </Switch>
         {/* </div> */}
       </Router>
     </div>
