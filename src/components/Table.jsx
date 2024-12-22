@@ -1,15 +1,25 @@
 import React, { useState } from 'react';
+import { FaEdit, FaKey } from 'react-icons/fa';
 
-const TableWithPagination = ({ columns, data, rowsPerPage }) => {
+
+const TableWithPagination = ({ columns, data, rowsPerPage, handleEdit, isEdit, isPasswordChange }) => {
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    // Filter data based on the search query
+    const filteredData = data.filter(row =>
+        Object.values(row).some(value =>
+            value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+        )
+    );
 
     // Calculate the total number of pages
-    const totalPages = Math.ceil(data.length / rowsPerPage);
+    const totalPages = Math.ceil(filteredData.length / rowsPerPage);
 
     // Get the data for the current page
     const indexOfLastRow = currentPage * rowsPerPage;
     const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-    const currentRows = data.slice(indexOfFirstRow, indexOfLastRow);
+    const currentRows = filteredData.slice(indexOfFirstRow, indexOfLastRow);
 
     // Change the page
     const changePage = (pageNumber) => {
@@ -19,6 +29,17 @@ const TableWithPagination = ({ columns, data, rowsPerPage }) => {
 
     return (
         <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+            {/* Search Box */}
+            <div className="p-4">
+                <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search..."
+                    className="px-4 py-2 border border-gray-300 rounded-md w-full focus:outline-indigo-600"
+                />
+            </div>
+
             {/* Table */}
             <table className="min-w-full table-auto">
                 <thead>
@@ -28,12 +49,39 @@ const TableWithPagination = ({ columns, data, rowsPerPage }) => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>
+                {/* <tbody>
                     {currentRows.map((row, index) => (
                         <tr key={index} className="border-t">
                             {Object.values(row).map((cell, idx) => (
-                                <td key={idx} className="px-6 py-4 text-sm text-gray-600">{cell}</td>
+
+                                <td key={idx} className="px-6 py-4 text-sm text-gray-600">{cell.id ? 'icon' : cell}</td>
                             ))}
+                        </tr>
+                    ))}
+                </tbody> */}
+                <tbody>
+                    {currentRows.map((row, index) => (
+                        <tr key={index} className="border-t">
+                            {/* Loop through all keys except 'id' */}
+                            {Object.entries(row).map(([key, value], idx) =>
+                                key !== 'id' ? (
+                                    <td key={idx} className="px-6 py-4 text-sm text-gray-600">
+                                        {value}
+                                    </td>
+                                ) : null
+                            )}
+                            {isEdit &&
+                                <td className="px-6 py-4 text-sm text-gray-600">
+
+                                    <FaEdit onClick={() => handleEdit(row)} className='cursor-pointer' />
+
+                                </td>
+                            }
+                            {isPasswordChange &&
+                                <td className="px-6 py-4 text-sm text-gray-600">
+                                    <FaKey onClick={() => handleEdit(row.id)} className='cursor-pointer' />
+                                </td>
+                            }
                         </tr>
                     ))}
                 </tbody>
@@ -72,3 +120,6 @@ const TableWithPagination = ({ columns, data, rowsPerPage }) => {
 };
 
 export default TableWithPagination;
+
+
+// export default TableWithPagination;

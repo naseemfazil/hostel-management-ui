@@ -1,5 +1,5 @@
 // import './App.css';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Login from './components/Login';
 import Register from './components/Register';
 import TableWithPagination from './components/Table';
@@ -25,31 +25,17 @@ function App() {
     // Add more data rows as needed
   ];
   return (
-    <div className="App">
-      {/* <Navbar/> */}
-      {/* <TableWithPagination columns={columns} data={data} rowsPerPage={2}/> */}
-      {/* <button
-        onClick={openModal}
-        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-      >
-        Open Modal
-      </button>
+    <Router>
+      <Switch>
+        <Route path="/login" component={Login} />
+        <Route path="/register" component={Register} />
+        <Route path="/home" component={Navbar} />
+        <Route path="/hotel-view-edit" component={HotelViewandEdit} />
+        <Route exact path="/" component={Login} />
+      </Switch>
+    </Router>
 
-      <Modal isOpen={isModalOpen} onClose={closeModal} title="My Modal Title">
-        <p className="text-gray-600">Working fine</p>
-      </Modal> */}
-      <Router>
-        {/* <div> */}
-        <Switch>
-          {/* <Route exact path="/" component={Login} /> */}
-          <Route path="/login" component={Login} />
-          <Route path="/register" component={Register} />
-          <Route path="/home" component={Navbar} />
-          <Route path="/hotel-view-edit" component={HotelViewandEdit} />
-        </Switch>
-        {/* </div> */}
-      </Router>
-    </div>
+
   );
 }
 

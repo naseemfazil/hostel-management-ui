@@ -17,12 +17,15 @@ const Login = () => {
             password
         }
         console.log("obj", obj);
+        history.push('/home/billing');
+        return
         try {
             const result = await axios.post('http://localhost:3001/login', obj);
             console.log(result.data);
             if (result?.data?.userRole === 'admin') {
                 console.log("works");
-                history.push('/hotel-view-edit');
+
+            } else {
 
             }
         } catch (error) {

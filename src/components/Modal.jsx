@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import '../styles/_modal.css';
 
-const Modal = ({ isOpen, onClose, title, children }) => {
+const Modal = ({ isOpen, onClose, title, modalWidth, children }) => {
     useEffect(() => {
         // Prevent background scroll when modal is open
         if (isOpen) {
@@ -24,9 +24,10 @@ const Modal = ({ isOpen, onClose, title, children }) => {
             style={{ animation: 'fadeIn 0.3s ease-in-out' }}
         >
             <div
-                className="bg-white rounded-lg shadow-lg w-96 transform transition-transform duration-500 ease-in-out"
+                className={`bg-white rounded-lg shadow-lg transform transition-transform duration-500 ease-in-out`}
                 style={{
                     animation: isOpen ? 'slideUp 0.5s ease-out' : 'slideDown 0.5s ease-in',
+                    width: modalWidth || '384px', // Default width (384px or w-96)
                 }}
             >
                 {/* Modal Header */}
@@ -55,6 +56,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
                 </div>
             </div>
         </div>
+
     );
 };
 
