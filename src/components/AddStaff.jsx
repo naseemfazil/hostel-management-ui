@@ -233,7 +233,7 @@ const AddStaff = () => {
                                         const value = e.target.value;
                                         // Allow only numbers and ensure length doesn't exceed 10
                                         if (/^\d*$/.test(value)) {
-                                            setMobile(value); // Update state if valid
+                                            setmobile(value); // Update state if valid
                                         }
                                     }}
                                 />
