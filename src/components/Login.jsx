@@ -17,16 +17,24 @@ const Login = () => {
             password
         }
         console.log("obj", obj);
-        history.push('/home/billing');
-        return
+
+        // if (userObj.admin === 'admin'){
+
+        // }else{
+
+        // }
+        //     history.push('/home/billing');
+        // return
         try {
-            const result = await axios.post('http://localhost:3001/login', obj);
+            const result = await axios.post('http://localhost:3000/login', obj);
             console.log(result.data);
-            if (result?.data?.userRole === 'admin') {
+            sessionStorage.setItem('user', JSON.stringify({ name: result?.data?.name, role: result?.data?.role }));
+            if (result?.data?.role === 'admin') {
                 console.log("works");
-
+                history.push('/home/dashboard');
             } else {
-
+                console.log("stafff");
+                history.push('/home/view-room');
             }
         } catch (error) {
             console.error('Error:', error);
@@ -111,11 +119,11 @@ const Login = () => {
                     </div>
 
                     <p className="mt-10 text-center text-sm/6 text-gray-500">
-                        Not a member?{' '}
+                        Forgot Password?{' '}
                         {/* <a className="font-semibold text-indigo-600 hover:text-indigo-500 z-50" onClick={() => history.push('/register')}>
                             Register
                         </a> */}
-                        <Link className="font-semibold text-indigo-600 hover:text-indigo-500 z-50" to="/register" onClick={() => history.push('/register')}>Register</Link>
+                        {/* <Link className="font-semibold text-indigo-600 hover:text-indigo-500 z-50" to="/register" onClick={() => history.push('/register')}>Register</Link> */}
                     </p>
                 </div>
             </div>

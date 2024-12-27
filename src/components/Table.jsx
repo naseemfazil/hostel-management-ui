@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { FaEdit, FaKey } from 'react-icons/fa';
+import { FaTrashCan } from 'react-icons/fa6';
 
 
-const TableWithPagination = ({ columns, data, rowsPerPage, handleEdit, isEdit, isPasswordChange }) => {
+const TableWithPagination = ({ columns, data, rowsPerPage, handleEdit, isEdit, isPasswordChange, isDeactive, handleDel, isAdd, book }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -70,17 +71,32 @@ const TableWithPagination = ({ columns, data, rowsPerPage, handleEdit, isEdit, i
                                     </td>
                                 ) : null
                             )}
-                            {isEdit &&
+                            {isEdit && (
+
                                 <td className="px-6 py-4 text-sm text-gray-600">
 
                                     <FaEdit onClick={() => handleEdit(row)} className='cursor-pointer' />
 
                                 </td>
+                            )
                             }
-                            {isPasswordChange &&
+                            {isPasswordChange && (
                                 <td className="px-6 py-4 text-sm text-gray-600">
                                     <FaKey onClick={() => handleEdit(row.id)} className='cursor-pointer' />
                                 </td>
+                            )
+                            }
+                            {isDeactive && (
+
+                                <td className="px-6 py-4 text-sm text-gray-600">
+                                    <FaTrashCan onClick={() => handleDel(row.id)} className='cursor-pointer' />
+                                </td>
+                            )
+                            }
+                            {isAdd && (
+                                <button onClick={() => book(row)} className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600">Book</button>
+                            )
+
                             }
                         </tr>
                     ))}

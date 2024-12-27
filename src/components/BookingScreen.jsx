@@ -3,11 +3,19 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../styles/_hotelBooking.css";
+import { useLocation, useHistory } from 'react-router-dom';
 
 const BookingScreen = () => {
     const [checkInDate, setCheckInDate] = useState(new Date());
     const [checkOutDate, setCheckOutDate] = useState(new Date());
     const [persons, setPersons] = useState("2");
+
+    const location = useLocation();
+    const history = useHistory();
+    const localState = location.state || {};
+
+    console.log("localState",localState);
+    
 
 
     const cardDetails = [
@@ -89,7 +97,7 @@ const BookingScreen = () => {
                     </div>
                 </div>
             </div>
-            <div className="mt-4">
+            {/* <div className="mt-4">
                 <h4 className="font-semibold text-black lg:">Recommendation for you</h4>
                 <div className="booking-rooms">
                     {cardDetails.map((eachDtls, index) => {
@@ -99,19 +107,19 @@ const BookingScreen = () => {
                                 <div class="card-content">
                                     <div className="flex justify-between items-baseline">
                                         <h2 class="card-title">{eachDtls.name}</h2>
-                                        <a  class="edit-icon" title="Edit">
+                                        <a class="edit-icon" title="Edit">
                                             <img src="https://cdn-icons-png.flaticon.com/512/1827/1827933.png" alt="Edit Icon" />
                                         </a>
                                     </div>
                                     <p class="card-description">{eachDtls.dec}</p>
-                                    <button  class="card-button">Read More</button>
+                                    <button class="card-button">Read More</button>
                                 </div>
                             </div>
                         )
                     })}
 
                 </div>
-            </div>
+            </div> */}
 
         </div>
     );

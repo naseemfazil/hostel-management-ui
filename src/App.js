@@ -7,6 +7,8 @@ import { useState } from 'react';
 import Modal from './components/Modal';
 import HotelViewandEdit from './components/HotelViewandEdit';
 import Navbar from './components/NavBar';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
 
@@ -25,15 +27,18 @@ function App() {
     // Add more data rows as needed
   ];
   return (
-    <Router>
-      <Switch>
-        <Route path="/login" component={Login} />
-        <Route path="/register" component={Register} />
-        <Route path="/home" component={Navbar} />
-        <Route path="/hotel-view-edit" component={HotelViewandEdit} />
-        <Route exact path="/" component={Login} />
-      </Switch>
-    </Router>
+    <div>
+      <ToastContainer />
+      <Router>
+        <Switch>
+          <Route path="/login" component={Login} />
+          <Route path="/register" component={Register} />
+          <Route path="/home" component={Navbar} />
+          <Route path="/hotel-view-edit" component={HotelViewandEdit} />
+          <Route exact path="/" component={Login} />
+        </Switch>
+      </Router>
+    </div>
 
 
   );

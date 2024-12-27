@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import InputBox from './InputBox';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 const RequestMaitance = () => {
@@ -10,28 +11,61 @@ const RequestMaitance = () => {
     const [issue, setIssue] = useState('');
     const [urgency, setUrgency] = useState('');
     const [category, setCategory] = useState('');
+    const [staffList, setStaffList] = useState('');
+    const [getStaffList, setGetStaffList] = useState([]);
+    const [getRoomList, setGetRoomList] = useState([]);
+
+    const history = useHistory();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = {
             name,
-            roomNumber,
+            roomId:roomNumber,
             email,
             mobile: phone,
-            description: issue,
-            urgency,
+            reason: issue,
+            priorityLevel: urgency,
             category,
+            staffId: staffList
         };
         console.log(formData);
-
+        // return
         try {
-            const result = await axios.post('http://localhost:3001/maintenance-requests', formData);
+            const result = await axios.post('http://localhost:3000/api/maintenance/create', formData);
             console.log(result.data);
+            history.push('/home/view-maintain');
+
         } catch (error) {
             console.error('Error:', error);
         }
     };
 
+    useEffect(() => {
+        getRooms();
+        getStaff();
+    }, []);
+
+    const getRooms = async () => {
+        try {
+            const result = await axios.post('http://localhost:3000/api/room/getAll', {});
+            console.log(result.data);
+            setGetRoomList(result?.data?.rooms);
+        } catch {
+
+        }
+    }
+
+    const getStaff = async () => {
+        try {
+            const result = await axios.post('http://localhost:3000/api/staff/getAll', {});
+            console.log("getStafff", result.data);
+            setGetStaffList(result?.data);
+
+        } catch {
+
+        }
+    }
     return (
         <div className="mx-auto p-6 bg-gray-50 shadow-md">
             <form onSubmit={handleSubmit}>
@@ -46,14 +80,24 @@ const RequestMaitance = () => {
                         />
                     </div>
 
-                    <div>
-                        <label htmlFor="room-number" className="block text-sm font-medium text-gray-700">Room Number</label>
-                        <InputBox
-                            type="text"
-                            id="room-number"
+                    <div className="">
+                        <label htmlFor="urgency" className="block text-sm font-medium text-gray-700">Room Number</label>
+                        <select
+                            id="staff"
                             value={roomNumber}
                             onChange={(e) => setRoomNumber(e.target.value)}
-                        />
+                            className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                        >
+                            <option value="" disabled selected>
+                                Please Select
+                            </option>
+                            {getRoomList.map((eachRoom) => (
+                                <option key={eachRoom._id} value={eachRoom._id}>
+                                    {eachRoom.roomName}
+                                </option>
+                            ))}
+                        </select>
+
                     </div>
                 </div>
 
@@ -102,6 +146,26 @@ const RequestMaitance = () => {
                         <option>Medium</option>
                         <option>High</option>
                     </select>
+                </div>
+
+                <div className="mt-4">
+                    <label htmlFor="urgency" className="block text-sm font-medium text-gray-700">Assign Staff</label>
+                    <select
+                        id="staff"
+                        value={staffList}
+                        onChange={(e) => setStaffList(e.target.value)}
+                        className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    >
+                        <option value="" disabled selected>
+                            Please Select
+                        </option>
+                        {getStaffList.map((eachStaff) => (
+                            <option key={eachStaff._id} value={eachStaff._id}>
+                                {eachStaff.name}
+                            </option>
+                        ))}
+                    </select>
+
                 </div>
 
                 <div className="mt-6">

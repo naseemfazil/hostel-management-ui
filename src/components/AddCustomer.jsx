@@ -5,12 +5,14 @@ import Modal from './Modal';
 import InputBox from './InputBox';
 import TableWithPagination from './Table';
 import Loader from './Loader';
+import { useHistory } from 'react-router-dom';
+
 
 const AddCustomer = () => {
 
 
-
-    const columns = ['Name', 'Mobile', 'Email', 'Age', 'Aadhar', 'Address', 'Actions'];
+    const history = useHistory();
+    const columns = ['Name', 'Mobile', 'Email', 'Age', 'Aadhar', 'Address', 'Actions', ''];
 
     // const data = [
     //     { id: 1, name: 'John Doe', age: 20, aadhar: 3123123313, mobile: 132343242, email: 'john@example.com', keyIcon: <FaKey /> },
@@ -31,6 +33,7 @@ const AddCustomer = () => {
     const [address, setAddress] = useState('');
     const [isActive, setIsActive] = useState(true);
     const [allCustomer, setAllCustomer] = useState([]);
+    const [selectedUserId, setSelectedUserId] = useState(null);
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
@@ -75,19 +78,35 @@ const AddCustomer = () => {
         // setLoading(true);
 
         console.log({ userObj });
-        try {
-            const result = await axios.post('http://localhost:3000/api/customers/create', userObj);
-            console.log(result);
-            clearFiled();
-            closeModal();
-        } catch (error) {
-            console.error('Error:', error);
+
+        if (!selectedUserId) {
+            try {
+                const result = await axios.post('http://localhost:3000/api/customers/create', userObj);
+                console.log(result);
+                clearFields();
+                closeModal();
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        } else {
+            console.log("Editing staff:", userObj);
+            try {
+                const result = await axios.post('http://localhost:3000/api/customers/edit', { id: selectedUserId, ...userObj });
+                console.log("Staff Updated:", result.data);
+
+                clearFields();
+                closeModal();
+                setSelectedUserId(null);
+                getAllCustomer();
+            } catch (error) {
+                console.error('Error:', error);
+            }
         }
 
     }
 
 
-    const clearFiled = () => {
+    const clearFields = () => {
         console.log("--------------------");
 
         setName('');
@@ -96,6 +115,25 @@ const AddCustomer = () => {
         setAddress('');
         setEmail('');
         setMobile('');
+    }
+
+    const handleEdit = (userObj) => {
+        console.log("userObj", userObj);
+        openModal();
+        setSelectedUserId(userObj.id)
+        setName(userObj.name);
+        setAge(Number(userObj.age));
+        setAadhar(userObj.adhar);
+        setAddress(userObj.address);
+        setEmail(userObj.email);
+        setMobile(userObj.mobile);
+    }
+
+
+    const bookRoom = (userObj) => {
+        console.log("bookkkkkkk", userObj);
+        history.push('/home/booking', { userObj })
+
     }
 
     return (
@@ -266,7 +304,7 @@ const AddCustomer = () => {
             {loading && (
                 <Loader />
             )}
-            <TableWithPagination columns={columns} data={allCustomer} rowsPerPage={5} />
+            <TableWithPagination columns={columns} data={allCustomer} rowsPerPage={5} isEdit={true} handleEdit={handleEdit} isAdd={true} book={bookRoom} />
         </div>
     );
 }

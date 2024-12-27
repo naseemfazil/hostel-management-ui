@@ -9,6 +9,7 @@ const InputBox = (props) => {
             id={props.id}
             name={props.name}
             type={props.type}
+            value={props.value}
             required={props.required}
             autoComplete={props.autoComplete}
             placeholder={props.placeholder}

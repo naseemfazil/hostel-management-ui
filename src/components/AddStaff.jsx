@@ -4,60 +4,73 @@ import Modal from './Modal';
 import InputBox from './InputBox';
 import axios from 'axios';
 import { FaKey } from 'react-icons/fa';
+import ExportToExcel from './ExportToExcel';
 
 
 
 const AddStaff = () => {
 
 
-    const columns = ['Name', 'Mobile', 'Email', 'Age', 'Aadhar', 'Address', 'Actions', ''];
-    // const data = [
-    //     { id: 1, name: 'John Doe', age: 20, aadhar: 3123123313, mobile: 132343242, email: 'john@example.com', keyIcon: <FaKey /> },
-    //     { id: 2, name: 'Jane Smith', age: 20, aadhar: 3123123313, mobile: 132343242, email: 'jane@example.com', },
-    //     { id: 3, name: 'Sam Johnson', age: 20, aadhar: 3123123313, mobile: 132343242, email: 'sam@example.com', },
-    //     { id: 4, name: 'Alice Brown', age: 20, aadhar: 3123123313, mobile: 132343242, email: 'alice@example.com', },
-    //     { id: 5, name: 'Charlie Green', age: 20, aadhar: 3123123313, mobile: 132343242, email: 'charlie@example.com', },
-    //     // Add more data rows as needed
-    // ];
+    const columns = ['Name', 'mobile', 'Email', 'Age', 'Aadhar', 'Address', 'Actions', ''];
+
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [name, setName] = useState('');
     const [age, setAge] = useState('');
-    const [aadhar, setAadhar] = useState('');
-    const [mobile, setMobile] = useState('');
+    const [adhar, setAadhar] = useState('');
+    const [mobile, setmobile] = useState('');
     const [email, setEmail] = useState('');
     const [address, setAddress] = useState('');
     const [isActive, setIsActive] = useState(true);
     const [allStaff, setAllStaff] = useState([]);
+    const [selectedUserId, setSelectedUserId] = useState(null);
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
 
 
     const addStaff = async () => {
-        console.log("Works");
-        let userObj = { name, age, adhar: aadhar, mobile: mobile, email, address, isActive };
+        const userObj = { name, age, adhar, mobile: mobile, email, address, isActive };
+        console.log("selectedUserId", selectedUserId);
 
-        console.log({ userObj });
-        try {
-            const result = await axios.post('http://localhost:3000/api/staff/create', userObj);
-            console.log(result);
-            clearFiled();
-            closeModal();
-        } catch (error) {
-            console.error('Error:', error);
+        if (!selectedUserId) {
+            // Add new staff
+            console.log("Adding new staff:", userObj);
+            try {
+                const result = await axios.post('http://localhost:3000/api/staff/create', userObj);
+                console.log("Staff Added:", result.data);
+
+                clearFields();
+                closeModal();
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        } else {
+            // Edit existing staff
+            console.log("Editing staff:", userObj);
+            try {
+                const result = await axios.post('http://localhost:3000/api/staff/edit', { id: selectedUserId, ...userObj });
+                console.log("Staff Updated:", result.data);
+
+                clearFields();
+                closeModal();
+                setSelectedUserId(null);
+                getStaff();
+            } catch (error) {
+                console.error('Error:', error);
+            }
         }
+    };
 
-    }
 
-    const clearFiled = () => {
+    const clearFields = () => {
         setName('');
         setAge('');
         setAadhar('');
         setAddress('');
         setEmail('');
-        setMobile('');
+        setmobile('');
     }
 
 
@@ -90,23 +103,19 @@ const AddStaff = () => {
     }
 
     const handleEdit = (userObj) => {
-        console.log("handleEdit", userObj);
-        // {
-        //     "name": "Neha Iyer",
-        //     "mobile": "8765432109",
-        //     "email": "nehaiyer@example.com",
-        //     "age": 30,
-        //     "adhar": "778899991122",
-        //     "address": "89, Vasant Vihar, Delhi",
-        //     "id": "67657dbd779bc11e379e9322"
-        // }
+        console.log("handleEdit", userObj.id);
         openModal();
+        setSelectedUserId(userObj.id)
+
+        console.log("userid", selectedUserId);
+
         setName(userObj.name);
         setAge(Number(userObj.age));
         setAadhar(userObj.adhar);
         setAddress(userObj.address);
         setEmail(userObj.email);
-        setMobile(userObj.mobile);
+        setmobile(userObj.mobile);
+        // addStaff(userObj.id, userObj);
         // setTimeout(() => {
         // }, 1000);
         // const userToEdit = allCustomer.find((user) => user.id === id); // Access _id internally
@@ -117,8 +126,16 @@ const AddStaff = () => {
 
     return (
         <div>
-            <div className='flex justify-end p-3'>
-                <button onClick={() => openModal()} className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600">Add</button>
+            <h1 className="text-3xl font-bold text-gray-800 ">Add Staff</h1>
+
+            <div className='flex justify-end p-3 gap-2 items-center'>
+                <div>
+                    <button onClick={() => openModal()} className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600">Add</button>
+                </div>
+                <div>
+
+                    <ExportToExcel data={allStaff} />
+                </div>
             </div>
             <Modal isOpen={isModalOpen} onClose={closeModal} title="Add Staff">
                 <div className="mt-1 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -162,12 +179,19 @@ const AddStaff = () => {
 
                             <div className="mt-2">
                                 <InputBox
-                                    type="number"
+                                    type="text" // Keep the type as "text"
                                     required
                                     value={age}
-                                    onChange={(e) => setAge(Number(e.target.value))}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        // Allow only numbers
+                                        if (/^\d*$/.test(value)) {
+                                            setAge(value); // Update state only if input is numeric
+                                        }
+                                    }}
                                 />
                             </div>
+
                         </div>
 
 
@@ -182,15 +206,21 @@ const AddStaff = () => {
                                 <InputBox
                                     type="number"
                                     required
-                                    value={aadhar}
-                                    onChange={(e) => setAadhar(Number(e.target.value))}
+                                    value={adhar}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        // Allow only numbers
+                                        if (/^\d*$/.test(value)) {
+                                            setAadhar(value); // Update state only if input is numeric
+                                        }
+                                    }}
                                 />
                             </div>
                         </div>
                         <div>
                             <div className="flex items-center justify-between">
                                 <label htmlFor="password" className="block text-sm/6 font-medium text-black">
-                                    Mobile Number
+                                    mobile Number
                                 </label>
                             </div>
 
@@ -199,7 +229,13 @@ const AddStaff = () => {
                                     type="number"
                                     required
                                     value={mobile}
-                                    onChange={(e) => setMobile(Number(e.target.value))}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        // Allow only numbers and ensure length doesn't exceed 10
+                                        if (/^\d*$/.test(value)) {
+                                            setMobile(value); // Update state if valid
+                                        }
+                                    }}
                                 />
                             </div>
                         </div>
