@@ -4,16 +4,20 @@ import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FaTrashCan } from 'react-icons/fa6';
+import { FaTrashAlt } from 'react-icons/fa';
+import { formatISODate } from '../utils/dateFormat';
 
 
 
 const ViewRoom = () => {
 
     const [allRooms, setAllRooms] = useState([]);
+    const [allocationDtls, setAllocationDtls] = useState([]);
 
     const history = useHistory();
+    const [activeTab, setActiveTab] = useState(0);
 
-    const columns = ['Room Name', 'Room Size', 'Bed Size', 'Max Occupancy', 'AC Available', 'Rent per day', 'Actions', ''];
+    const columns = ['Room Name', 'Customer Name', 'Check In', 'Check Out', 'Status'];
 
     useEffect(() => {
         getRooms();
@@ -33,7 +37,20 @@ const ViewRoom = () => {
                 rentPerDay: room.rentPerDay,
                 id: room._id,
             }));
+
             setAllRooms(filteredData);
+            const tableData = result?.data?.rooms.map((room) => ({
+                roomName: room.roomName,
+                customerName: room?.allocation?.customerName,
+                checkInDate: formatISODate(room?.allocation?.checkInDate),
+                checkOutDate: formatISODate(room?.allocation?.checkOutDate),
+                status: room?.allocation.status,
+
+            }));
+
+            setAllocationDtls(tableData);
+
+
         } catch (err) {
             console.log("err", err);
         }
@@ -68,37 +85,86 @@ const ViewRoom = () => {
 
     }
     return (
-        <div>
-            <div className="flex justify-center gap-3 flex-wrap">
-                {allRooms.map((eachDtls) => {
-                    console.log("eachDtls", eachDtls);
-                    return (
-
-                        <div class="card">
-                            <img src="https://images.unsplash.com/photo-1560347876-aeef00ee58a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400" alt="Card Image" class="card-image" />
-                            <div class="card-content">
-                                <div className="flex justify-between items-baseline">
-                                    <h2 class="card-title">{eachDtls.roomName}</h2>
-                                    <a class="edit-icon" title="Edit" onClick={() => handleEdit(eachDtls)}>
-                                        <img src="https://cdn-icons-png.flaticon.com/512/1827/1827933.png" alt="Edit Icon" />
-                                    </a>
-
-                                </div>
-                                <p class="card-description">{eachDtls.roomSize}</p>
-                                <p class="card-description">AC Available: {eachDtls.isAcAvailable}</p>
-                                <div className='flex justify-between'>
-                                    <button class="card-button">{eachDtls.rentPerDay}</button>
-                                    {/* <div class="edit-icon" title="Edit"> */}
-                                    <FaTrashCan onClick={() => handleDel(eachDtls.id)} className='cursor-pointer' />
-                                    {/* </a> */}
-                                </div>
-                            </div>
-                        </div>
-                    )
-                })}
+        <div className="max-w-4xl mx-auto mt-10">
+            {/* <div className="flex justify-center items-center">
+                    <div className="w-8 h-8 border-4 border-blue-500 border-dotted rounded-full animate-spin"></div>
+                    <p className="ml-3 text-blue-500">Loading...</p>
+                </div> */}
+            {/* Tab Buttons */}
+            <div className="flex border-b border-gray-200">
+                <button
+                    onClick={() => setActiveTab(0)}
+                    className={`px-6 py-2 text-sm font-medium ${activeTab === 0
+                        ? "border-b-2 border-blue-500 text-blue-500"
+                        : "text-gray-500 hover:text-blue-500"
+                        }`}
+                >
+                    Room Cards
+                </button>
+                <button
+                    onClick={() => setActiveTab(1)}
+                    className={`px-6 py-2 text-sm font-medium ${activeTab === 1
+                        ? "border-b-2 border-blue-500 text-blue-500"
+                        : "text-gray-500 hover:text-blue-500"
+                        }`}
+                >
+                    Room Table
+                </button>
             </div>
 
-            {/* <TableWithPagination columns={columns} data={allRooms} rowsPerPage={4} isEdit={true} handleEdit={handleEdit} isDeactive={true} handleDel={handleDel} /> */}
+            {/* Tab Content */}
+            <div className="mt-6">
+                {activeTab === 0 && (
+                    <div className="flex justify-center gap-3 flex-wrap">
+                        {allRooms.map((eachDtls) => (
+                            <div key={eachDtls.id} className="card border border-gray-300 rounded-lg shadow-md p-4 w-64">
+                                <img
+                                    src="https://images.unsplash.com/photo-1560347876-aeef00ee58a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400"
+                                    alt="Room"
+                                    className="card-image w-full h-40 object-cover rounded-md"
+                                />
+                                <div className="card-content mt-3">
+                                    <div className="flex justify-between items-center">
+                                        <h2 className="card-title text-lg font-semibold">{eachDtls.roomName}</h2>
+                                        <a
+                                            className="edit-icon cursor-pointer"
+                                            title="Edit"
+                                            onClick={() => handleEdit(eachDtls)}
+                                        >
+                                            <img
+                                                src="https://cdn-icons-png.flaticon.com/512/1827/1827933.png"
+                                                alt="Edit Icon"
+                                                className="w-5 h-5"
+                                            />
+                                        </a>
+                                    </div>
+                                    <p className="card-description text-sm text-gray-600">{eachDtls.roomSize}</p>
+                                    <p className="card-description text-sm text-gray-600">
+                                        AC Available: {eachDtls.isAcAvailable ? "Yes" : "No"}
+                                    </p>
+                                    <div className="flex justify-between items-center mt-3">
+                                        <button className="card-button bg-blue-500 text-white px-4 py-2 rounded text-sm">
+                                            ₹{eachDtls.rentPerDay}
+                                        </button>
+                                        <FaTrashAlt
+                                            onClick={() => handleDel(eachDtls.id)}
+                                            className="cursor-pointer text-red-500 text-lg"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {activeTab === 1 && (
+                    <TableWithPagination
+                        columns={columns}
+                        data={allocationDtls}
+                        rowsPerPage={4}
+                    />
+                )}
+            </div>
         </div>
     );
 }

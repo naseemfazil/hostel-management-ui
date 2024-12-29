@@ -11,13 +11,15 @@ const IsAdminWrapper = (props) => {
         if (storedUser) {
             setAdmin(storedUser);
         }
+        console.log("isAdmin",isAdmin);
+        
     }, []);
 
 
 
     return (
         <>
-            {isAdmin?.user == 'admin' && props.children}
+            {isAdmin?.role == 'admin' && props.children}
         </>
     );
 }

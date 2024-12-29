@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { FaEdit, FaKey } from 'react-icons/fa';
+import { FaCheck, FaEdit, FaKey } from 'react-icons/fa';
 import { FaTrashCan } from 'react-icons/fa6';
 
 
-const TableWithPagination = ({ columns, data, rowsPerPage, handleEdit, isEdit, isPasswordChange, isDeactive, handleDel, isAdd, book }) => {
+const TableWithPagination = ({ columns, data, rowsPerPage, handleEdit, isEdit, isPasswordChange, isDeactive, handleDel, isAdd, book, isDone, requestDone }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
 
     // Filter data based on the search query
     const filteredData = data.filter(row =>
         Object.values(row).some(value =>
-            value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+            value?.toString().toLowerCase().includes(searchQuery.toLowerCase())
         )
     );
 
@@ -65,7 +65,7 @@ const TableWithPagination = ({ columns, data, rowsPerPage, handleEdit, isEdit, i
                         <tr key={index} className="border-t">
                             {/* Loop through all keys except 'id' */}
                             {Object.entries(row).map(([key, value], idx) =>
-                                key !== 'id' ? (
+                                key !== 'id' && key !== 'staffId' ? (
                                     <td key={idx} className="px-6 py-4 text-sm text-gray-600">
                                         {value}
                                     </td>
@@ -95,6 +95,12 @@ const TableWithPagination = ({ columns, data, rowsPerPage, handleEdit, isEdit, i
                             }
                             {isAdd && (
                                 <button onClick={() => book(row)} className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600">Book</button>
+                            )
+
+                            }
+                            {isDone && (
+                                <FaCheck onClick={() => requestDone(row)} className="cursor-pointer" color="green" />
+
                             )
 
                             }

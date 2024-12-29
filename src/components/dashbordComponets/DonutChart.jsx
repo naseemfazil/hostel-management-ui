@@ -1,26 +1,24 @@
 import React from "react";
 import { Chart } from "react-google-charts";
 
-const donutChartData = [
-    ["Category", "Amount"],
-    ["Rent", 5000],
-    ["Utilities", 1500],
-    ["Additional Charges", 700],
-];
+const DonutChart = ({ data }) => {
+    // Prepare the data to match the expected format for DonutChart
+    const chartData = data;
 
-const donutChartOptions = {
-    title: "Payment Breakdown",
-    pieHole: 0.4,
+    const donutChartOptions = {
+        title: "Payment Breakdown",
+        pieHole: 0.4,
+    };
+
+    return (
+        <Chart
+            chartType="PieChart"
+            data={chartData}
+            options={donutChartOptions}
+            width="100%"
+            height="400px"
+        />
+    );
 };
-
-const DonutChart = () => (
-    <Chart
-        chartType="PieChart"
-        data={donutChartData}
-        options={donutChartOptions}
-        width="100%"
-        height="400px"
-    />
-);
 
 export default DonutChart;

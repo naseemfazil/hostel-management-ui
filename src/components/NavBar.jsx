@@ -71,7 +71,7 @@ const Navbar = () => {
                     <FaBars size={24} />
                 </button>
                 <div className="flex flex-col space-y-4 p-4">
-                    {/* <IsAdminWrapper> */}
+                    <IsAdminWrapper>
                         <NavLink
                             to="/home/dashboard"
                             className="flex items-center text-lg font-medium hover:bg-blue-100 hover:text-blue-600 p-2 rounded"
@@ -80,7 +80,7 @@ const Navbar = () => {
                             <FaTachometerAlt className="mr-2" />
                             {sidebarOpen && "Dashboard"}
                         </NavLink>
-                    {/* </IsAdminWrapper> */}
+                    </IsAdminWrapper>
                     <NavLink
                         to="/home/booking"
                         className="flex items-center text-lg font-medium hover:bg-blue-100 hover:text-blue-600 p-2 rounded"

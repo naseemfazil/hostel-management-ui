@@ -3,12 +3,20 @@ import InputBox from './InputBox';
 import BgImg from '../assets/BgImg2.jpg';
 import { useHistory, Link } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const Login = () => {
 
     const history = useHistory();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [newPassword, setNewPassword] = useState();
+    const [isOpen, setIsOpen] = useState(false);
+    const [loggedId, setLoggedId] = useState(null);
+    const [confirmPassword, setConfirmPassword] = useState('');
+
+
+    const toggleModal = () => setIsOpen(!isOpen);
 
 
     const login = async () => {
@@ -34,7 +42,16 @@ const Login = () => {
                 history.push('/home/dashboard');
             } else {
                 console.log("stafff");
-                history.push('/home/view-room');
+                if (password == "Welcome@123") {
+
+                    setLoggedId(result?.data?.staffId);
+                    toggleModal();
+
+                } else {
+                    console.log("--------------------");
+                    history.push('/home/view-room');
+                }
+
             }
         } catch (error) {
             console.error('Error:', error);
@@ -42,6 +59,36 @@ const Login = () => {
 
     }
 
+    const handleSubmit = async () => {
+
+
+        if (newPassword !== confirmPassword) {
+            alert('Please enter crt password')
+        } else {
+            let userObj = {
+
+                id: loggedId,
+                newPassword: newPassword,
+                oldPassword: password
+
+            }
+            console.log("obj", userObj);
+            const result = await axios.post('http://localhost:3000/api/staff/changePassword', userObj);
+            console.log("result", result);
+            if (result?.data?.message == "Password updated successfully.") {
+                toast.success('Password has been Changed', {
+                    // position: toast.POSITION.TOP_RIGHT,
+                    position: 'bottom-right',
+                    autoClose: 5000, // The toast will disappear after 5 seconds
+                });
+                history.push('/home/view-room');
+            }
+
+        }
+
+
+
+    }
     return (
         <div className="h-screen bg-cover bg-center"
             style={{ backgroundImage: `url(${BgImg})`, zIndex: '-1' }}>
@@ -119,7 +166,7 @@ const Login = () => {
                     </div>
 
                     <p className="mt-10 text-center text-sm/6 text-gray-500">
-                        Forgot Password?{' '}
+                        {/* Forgot Password?{' '} */}
                         {/* <a className="font-semibold text-indigo-600 hover:text-indigo-500 z-50" onClick={() => history.push('/register')}>
                             Register
                         </a> */}
@@ -127,6 +174,77 @@ const Login = () => {
                     </p>
                 </div>
             </div>
+
+
+
+            {isOpen && (
+                <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                        <h2 className="text-xl font-semibold mb-4">Change Password</h2>
+
+                        {/* Old Password Input */}
+                        <div className="mb-4">
+                            <label htmlFor="oldPassword" className="block text-gray-700 mb-2">
+                                Old Password
+                            </label>
+                            <input
+                                type="password"
+                                id="oldPassword"
+                                value={password}
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+
+                                required
+                            />
+                        </div>
+
+                        {/* New Password Input */}
+                        <div className="mb-4">
+                            <label htmlFor="newPassword" className="block text-gray-700 mb-2">
+                                New Password
+                            </label>
+                            <input
+                                type="password"
+                                id="newPassword"
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        {/* Confirm New Password Input */}
+                        <div className="mb-4">
+                            <label htmlFor="confirmNewPassword" className="block text-gray-700 mb-2">
+                                Confirm New Password
+                            </label>
+                            <input
+                                type="password"
+                                id="confirmNewPassword"
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        {/* Buttons */}
+                        <div className="flex justify-between">
+                            <button
+                                onClick={handleSubmit}
+                                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                            >
+                                Change Password
+                            </button>
+                            <button
+                                onClick={toggleModal}
+                                className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

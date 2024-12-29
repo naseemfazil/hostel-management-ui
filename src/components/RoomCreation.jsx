@@ -34,7 +34,7 @@ const RoomCreation = () => {
             console.log("formData", formData);
 
         }
-    }, [localState]);
+    }, [localState.obj]);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -67,6 +67,7 @@ const RoomCreation = () => {
                 // Call Create API
                 const result = await axios.post('http://localhost:3000/api/room/create', formData);
                 console.log("Room Created:", result.data);
+                history.push('/home/view-room');
             }
         } catch (err) {
             console.error("Error:", err);
